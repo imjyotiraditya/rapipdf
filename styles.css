@@ -293,22 +293,6 @@ rapi-pdf {
     width: 100% !important;
 }
 
-rapi-pdf .spec-input {
-    background: #1e1e1e;
-    color: #e0e0e0;
-    border: 1px solid #333;
-    font-family: monospace;
-    box-sizing: border-box;
-}
-
-rapi-pdf .btn-default {
-    background: #333;
-}
-
-rapi-pdf .btn-default:hover {
-    background: #444;
-}
-
 .footer {
     text-align: center;
     padding: 20px;
