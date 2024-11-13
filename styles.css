@@ -250,9 +250,35 @@ rapi-pdf .btn-default:hover {
     background: #444;
 }
 
+.github-button {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    font-family: monospace;
+    padding: 8px 12px;
+    background: #333;
+    color: #e0e0e0;
+    text-decoration: none;
+    border-radius: 4px;
+    border: 1px solid #444;
+    transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.github-button:hover {
+    background: #444;
+    border-color: #555;
+    color: #e0e0e0;
+}
 
 @media (max-width: 768px) {
     .settings-grid {
         grid-template-columns: 1fr;
+    }
+
+    .github-button {
+        position: absolute;
+        top: 10px;
+        right: 10px;
     }
 }
