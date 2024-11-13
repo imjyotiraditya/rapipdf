@@ -6,6 +6,38 @@ body {
     padding: 20px;
 }
 
+.site-header {
+    border-bottom: 2px solid #333;
+    padding: 10px;
+    margin-bottom: 20px;
+}
+
+.header-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.logo h1 {
+    margin: 0;
+    font-size: 24px;
+    color: #e0e0e0;
+}
+
+.tagline {
+    margin: 0;
+    color: #888;
+    font-size: 14px;
+}
+
 .main-layout {
     max-width: 1200px;
     margin: 0 auto;
@@ -225,6 +257,23 @@ body {
     display: block;
 }
 
+.github-button {
+    padding: 8px 12px;
+    background: #333;
+    color: #e0e0e0;
+    text-decoration: none;
+    border-radius: 4px;
+    border: 1px solid #444;
+    transition: background 0.2s ease, border-color 0.2s ease;
+    font-family: monospace;
+}
+
+.github-button:hover {
+    background: #444;
+    border-color: #555;
+    color: #e0e0e0;
+}
+
 rapi-pdf {
     --primary-color: #333;
     --border-radius: 4px;
@@ -250,27 +299,6 @@ rapi-pdf .btn-default:hover {
     background: #444;
 }
 
-.github-button {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    z-index: 1000;
-    font-family: monospace;
-    padding: 8px 12px;
-    background: #333;
-    color: #e0e0e0;
-    text-decoration: none;
-    border-radius: 4px;
-    border: 1px solid #444;
-    transition: background 0.2s ease, border-color 0.2s ease;
-}
-
-.github-button:hover {
-    background: #444;
-    border-color: #555;
-    color: #e0e0e0;
-}
-
 .footer {
     text-align: center;
     padding: 20px;
@@ -291,13 +319,21 @@ rapi-pdf .btn-default:hover {
 }
 
 @media (max-width: 768px) {
+    body {
+        padding: 10px;
+    }
+
     .settings-grid {
         grid-template-columns: 1fr;
     }
 
-    .github-button {
-        position: absolute;
-        top: 10px;
-        right: 10px;
+    .header-content {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+    }
+
+    .logo {
+        align-items: center;
     }
 }

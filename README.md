@@ -1,8 +1,8 @@
-# RapiPDF Web Interface
+# SwiftDocs
 
-[![Website](https://img.shields.io/badge/Open-Website-blue?style=for-the-badge)](https://jyotiraditya.dev/rapipdf/)
+[![Website](https://img.shields.io/badge/Open-Website-blue?style=for-the-badge)](https://jyotiraditya.dev/swiftdocs/)
 
-A modern web interface for generating PDF documentation from OpenAPI/Swagger specifications using RapiPDF. This tool provides an intuitive UI for converting API specifications into beautifully formatted PDF documents with extensive customization options.
+A modern web interface for generating PDF documentation from OpenAPI/Swagger specifications. This tool provides an intuitive UI for converting API specifications into beautifully formatted PDF documents with extensive customization options.
 
 ## Features
 
