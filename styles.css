@@ -99,6 +99,35 @@ body {
     display: block;
 }
 
+.warning-banner {
+    background: #2d2d13;
+    border: 1px solid #666633;
+    color: #e0e0e0;
+    padding: 12px 16px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    font-family: monospace;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.warning-icon {
+    color: #cccc00;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.warning-text {
+    font-size: 14px;
+    line-height: 1.4;
+    flex: 1;
+}
+
+.warning-text strong {
+    color: #cccc00;
+}
+
 .file-zone {
     border: 2px dashed #444;
     padding: 20px;
@@ -331,9 +360,30 @@ rapi-pdf {
         align-items: center;
     }
 
+    .warning-banner {
+        padding: 12px;
+        gap: 10px;
+    }
+
+    .warning-icon {
+        width: 20px;
+        height: 20px;
+    }
+
+    .warning-text {
+        font-size: 13px;
+    }
+
     .setting-row input[type="text"],
     .setting-row input[type="color"],
     .setting-row select {
         height: 40px;
+    }
+}
+
+@media (max-width: 480px) {
+    .warning-banner {
+        padding: 10px;
+        gap: 8px;
     }
 }
