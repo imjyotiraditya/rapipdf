@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>API Documentation Generator</title>
+        <script src="https://mrin9.github.io/RapiPdf/rapipdf-min.js"></script>
+        <script
+            src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"></script>
+        <link rel="stylesheet" href="styles.css">
+    </head>
+    <body>
+        <div class="main-layout">
+            <div class="content-section">
+                <div class="container">
+                    <div class="tab-container">
+                        <div class="tab active" data-tab="url">URL</div>
+                        <div class="tab" data-tab="file">File Upload</div>
+                        <div class="tab" data-tab="text">Paste Content</div>
+                    </div>
+
+                    <div id="url-tab" class="tab-content active">
+                        <rapi-pdf id="rapipdf"
+                            spec-url="https://mrin9.github.io/RapiPdf/specs/petstore.json"
+                            pdf-schema-style="table" button-bg="#333"
+                            pdf-primary-color="#333"
+                            pdf-alternate-color="#444"
+                            pdf-title="API Reference">
+                            <div class="input-row">
+                                <input class="spec-input" id="spec-url"
+                                    type="text" placeholder="Spec URL" value
+                                    tabindex="0">
+                                <button class="btn-default" type="button"
+                                    tabindex="0">GENERATE PDF</button>
+                            </div>
+                        </rapi-pdf>
+                    </div>
+
+                    <div id="file-tab" class="tab-content">
+                        <div id="drop-zone" class="file-zone">
+                            <p>Drop OpenAPI/Swagger file here or click to
+                                select</p>
+                            <input type="file" id="file-input"
+                                accept=".json,.yaml,.yml"
+                                style="display: none;">
+                            <button class="btn-default">Select File</button>
+                        </div>
+                        <div id="file-status" class="status"></div>
+                    </div>
+
+                    <div id="text-tab" class="tab-content">
+                        <div class="input-container">
+                            <select id="format-select" class="format-select">
+                                <option value="json">JSON</option>
+                                <option value="yaml">YAML</option>
+                            </select>
+                            <button id="format-content"
+                                class="btn-default">Format</button>
+                        </div>
+                        <textarea id="text-input" class="text-input"
+                            placeholder="Paste your OpenAPI/Swagger content here (JSON or YAML)"></textarea>
+                        <div class="button-row">
+                            <button id="load-content" class="btn-default">Load
+                                Content</button>
+                        </div>
+                        <div id="text-status" class="status"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="settings-container container">
+                <h2 class="settings-title">PDF Settings</h2>
+
+                <div class="settings-grid">
+                    <div class="settings-group">
+                        <h3>Content Options</h3>
+                        <div class="checkbox-grid">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="include-info"
+                                    checked>
+                                <span>API Information</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="include-toc" checked>
+                                <span>Table of Contents</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="include-security"
+                                    checked>
+                                <span>Security Section</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="include-example">
+                                <span>Examples</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="include-api-details"
+                                    checked>
+                                <span>API Details</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="include-api-list">
+                                <span>API List</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="pdf-sort-tags"
+                                    checked>
+                                <span>Sort Tags</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="settings-group">
+                        <h3>Style Options</h3>
+                        <div class="style-grid">
+                            <div class="setting-row">
+                                <label>Schema Style</label>
+                                <select id="pdf-schema-style"
+                                    class="format-select">
+                                    <option value="table">Table</option>
+                                    <option value="object">Object</option>
+                                </select>
+                            </div>
+                            <div class="setting-row">
+                                <label>Primary Color</label>
+                                <input type="color" id="pdf-primary-color"
+                                    value="#333333">
+                            </div>
+                            <div class="setting-row">
+                                <label>Alternate Color</label>
+                                <input type="color" id="pdf-alternate-color"
+                                    value="#444444">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="settings-group">
+                        <h3>Text Content</h3>
+                        <div class="text-fields">
+                            <div class="setting-row">
+                                <label>PDF Title</label>
+                                <input type="text" id="pdf-title"
+                                    value="API Reference">
+                            </div>
+                            <div class="setting-row">
+                                <label>Cover Text</label>
+                                <input type="text" id="pdf-cover-text"
+                                    placeholder="Optional cover page text">
+                            </div>
+                            <div class="setting-row">
+                                <label>Security Text</label>
+                                <input type="text" id="pdf-security-text"
+                                    placeholder="Optional security text">
+                            </div>
+                            <div class="setting-row">
+                                <label>API Text</label>
+                                <input type="text" id="pdf-api-text"
+                                    placeholder="Optional API text">
+                            </div>
+                            <div class="setting-row">
+                                <label>Footer Text</label>
+                                <input type="text" id="pdf-footer-text"
+                                    placeholder="Optional footer text">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="apply-settings" onclick="applySettings()">Apply
+                    Settings</button>
+            </div>
+        </div>
+        <script src="script.js"></script>
+    </body>
+</html>
