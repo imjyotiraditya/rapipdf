@@ -1,11 +1,3 @@
-document.querySelectorAll('.tab').forEach(tab => {
-    tab.addEventListener('click', () => {
-        document.querySelectorAll('.tab, .tab-content').forEach(el => el.classList.remove('active'));
-        tab.classList.add('active');
-        document.getElementById(`${tab.dataset.tab}-tab`).classList.add('active');
-    });
-});
-
 const rapiPdf = document.getElementById('rapipdf');
 const dropZone = document.getElementById('drop-zone');
 const fileInput = document.getElementById('file-input');
@@ -16,85 +8,119 @@ const formatContentBtn = document.getElementById('format-content');
 const fileStatus = document.getElementById('file-status');
 const textStatus = document.getElementById('text-status');
 
-formatContentBtn.addEventListener('click', () => {
-    try {
-        const content = textInput.value.trim();
-        if (!content) return;
+document.querySelectorAll('.tab').forEach(tab => {
+    if (tab) {
+        tab.addEventListener('click', () => {
+            document.querySelectorAll('.tab, .tab-content').forEach(el => {
+                if (el) el.classList.remove('active');
+            });
+            tab.classList.add('active');
+            const tabContent = document.getElementById(`${tab.dataset.tab}-tab`);
+            if (tabContent) tabContent.classList.add('active');
+        });
+    }
+});
 
-        let formatted;
-        if (formatSelect.value === 'json') {
-            try {
-                const obj = jsyaml.load(content);
-                formatted = JSON.stringify(obj, null, 2);
-            } catch {
-                formatted = JSON.stringify(JSON.parse(content), null, 2);
+if (formatContentBtn && textInput && formatSelect) {
+    formatContentBtn.addEventListener('click', () => {
+        try {
+            const content = textInput.value.trim();
+            if (!content) return;
+
+            let formatted;
+            if (formatSelect.value === 'json') {
+                try {
+                    const obj = jsyaml.load(content);
+                    formatted = JSON.stringify(obj, null, 2);
+                } catch {
+                    formatted = JSON.stringify(JSON.parse(content), null, 2);
+                }
+            } else {
+                let obj;
+                try {
+                    obj = JSON.parse(content);
+                } catch {
+                    obj = jsyaml.load(content);
+                }
+                formatted = jsyaml.dump(obj);
             }
-        } else {
-            let obj;
-            try {
-                obj = JSON.parse(content);
-            } catch {
-                obj = jsyaml.load(content);
+            textInput.value = formatted;
+        } catch (error) {
+            if (textStatus) showStatus(textStatus, 'Invalid content format', 'error');
+            console.error('Format error:', error);
+        }
+    });
+}
+
+if (loadContentBtn && textInput && formatSelect && rapiPdf) {
+    loadContentBtn.addEventListener('click', () => {
+        try {
+            const content = textInput.value.trim();
+            if (!content) return;
+
+            let jsonContent;
+            if (formatSelect.value === 'yaml') {
+                jsonContent = JSON.stringify(jsyaml.load(content));
+            } else {
+                jsonContent = JSON.stringify(JSON.parse(content));
             }
-            formatted = jsyaml.dump(obj);
+
+            const blob = new Blob([jsonContent], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            rapiPdf.setAttribute('spec-url', url);
+
+            const urlTab = document.querySelector('[data-tab="url"]');
+            if (urlTab) urlTab.click();
+
+            if (textStatus) showStatus(textStatus, 'Content loaded successfully', 'success');
+        } catch (error) {
+            if (textStatus) showStatus(textStatus, 'Invalid content format', 'error');
+            console.error('Load error:', error);
         }
-        textInput.value = formatted;
-    } catch (error) {
-        showStatus(textStatus, 'Invalid content format', 'error');
-    }
-});
+    });
+}
 
-loadContentBtn.addEventListener('click', () => {
-    try {
-        const content = textInput.value.trim();
-        if (!content) return;
+if (dropZone) {
+    dropZone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dropZone.classList.add('drag-over');
+    });
 
-        let jsonContent;
-        if (formatSelect.value === 'yaml') {
-            jsonContent = JSON.stringify(jsyaml.load(content));
-        } else {
-            jsonContent = JSON.stringify(JSON.parse(content));
+    dropZone.addEventListener('dragleave', (e) => {
+        e.preventDefault();
+        dropZone.classList.remove('drag-over');
+    });
+
+    dropZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropZone.classList.remove('drag-over');
+        if (e.dataTransfer.files.length) {
+            handleFile(e.dataTransfer.files[0]);
         }
+    });
 
-        const blob = new Blob([jsonContent], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        rapiPdf.setAttribute('spec-url', url);
-        document.querySelector('[data-tab="url"]').click();
-        showStatus(textStatus, 'Content loaded successfully', 'success');
-    } catch (error) {
-        showStatus(textStatus, 'Invalid content format', 'error');
+    const uploadButton = dropZone.querySelector('.btn-default');
+    if (uploadButton && fileInput) {
+        uploadButton.addEventListener('click', () => {
+            fileInput.click();
+        });
     }
-});
+}
 
-dropZone.addEventListener('dragover', (e) => {
-    e.preventDefault();
-    dropZone.classList.add('drag-over');
-});
-
-dropZone.addEventListener('dragleave', (e) => {
-    e.preventDefault();
-    dropZone.classList.remove('drag-over');
-});
-
-dropZone.addEventListener('drop', (e) => {
-    e.preventDefault();
-    dropZone.classList.remove('drag-over');
-    if (e.dataTransfer.files.length) {
-        handleFile(e.dataTransfer.files[0]);
-    }
-});
-
-dropZone.querySelector('.btn-default').addEventListener('click', () => {
-    fileInput.click();
-});
-
-fileInput.addEventListener('change', (e) => {
-    if (e.target.files.length) {
-        handleFile(e.target.files[0]);
-    }
-});
+if (fileInput) {
+    fileInput.addEventListener('change', (e) => {
+        if (e.target.files.length) {
+            handleFile(e.target.files[0]);
+        }
+    });
+}
 
 function handleFile(file) {
+    if (!rapiPdf) {
+        console.error('RapiPdf element not found');
+        return;
+    }
+
     const reader = new FileReader();
     reader.onload = (e) => {
         try {
@@ -102,7 +128,7 @@ function handleFile(file) {
             let jsonContent;
 
             if (file.name.endsWith('.json')) {
-                JSON.parse(content);
+                JSON.parse(content); // Validate JSON
                 jsonContent = content;
             } else {
                 const obj = jsyaml.load(content);
@@ -112,16 +138,21 @@ function handleFile(file) {
             const blob = new Blob([jsonContent], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
             rapiPdf.setAttribute('spec-url', url);
-            document.querySelector('[data-tab="url"]').click();
-            showStatus(fileStatus, 'File loaded successfully', 'success');
+
+            const urlTab = document.querySelector('[data-tab="url"]');
+            if (urlTab) urlTab.click();
+
+            if (fileStatus) showStatus(fileStatus, 'File loaded successfully', 'success');
         } catch (error) {
-            showStatus(fileStatus, 'Invalid file format', 'error');
+            if (fileStatus) showStatus(fileStatus, 'Invalid file format', 'error');
+            console.error('File processing error:', error);
         }
     };
     reader.readAsText(file);
 }
 
 function showStatus(element, message, type) {
+    if (!element) return;
     element.textContent = message;
     element.className = `status ${type}`;
     setTimeout(() => {
@@ -129,12 +160,12 @@ function showStatus(element, message, type) {
     }, 3000);
 }
 
-function toggleSettings() {
-    const panel = document.getElementById('settings-panel');
-    panel.classList.toggle('open');
-}
-
 function applySettings() {
+    if (!rapiPdf) {
+        console.error('RapiPdf element not found');
+        return;
+    }
+
     const booleanAttrs = [
         'include-info',
         'include-toc',
@@ -147,7 +178,9 @@ function applySettings() {
 
     booleanAttrs.forEach(attr => {
         const element = document.getElementById(attr);
-        rapiPdf.setAttribute(attr, element.checked.toString());
+        if (element) {
+            rapiPdf.setAttribute(attr, element.checked.toString());
+        }
     });
 
     const textAttrs = [
@@ -163,37 +196,59 @@ function applySettings() {
 
     textAttrs.forEach(attr => {
         const element = document.getElementById(attr);
-        if (element.value) {
+        if (element && element.value) {
             rapiPdf.setAttribute(attr, element.value);
         }
     });
 
     const button = document.querySelector('.apply-settings');
-    button.textContent = 'Settings Applied!';
-    setTimeout(() => {
-        button.textContent = 'Apply Settings';
-    }, 2000);
+    if (button) {
+        button.textContent = 'Settings Applied!';
+        setTimeout(() => {
+            button.textContent = 'Apply Settings';
+        }, 2000);
+    }
 }
 
 function initializeSettings() {
+    if (!rapiPdf) {
+        console.warn('RapiPdf element not found');
+        return;
+    }
+
     const booleanElements = document.querySelectorAll('input[type="checkbox"]');
     booleanElements.forEach(checkbox => {
-        const attr = checkbox.id;
-        const value = rapiPdf.getAttribute(attr);
-        checkbox.checked = value === null || value !== 'false';
+        if (checkbox && checkbox.id) {
+            const attr = checkbox.id;
+            const value = rapiPdf.getAttribute(attr);
+            checkbox.checked = value === null || value !== 'false';
+        }
     });
 
     const valueElements = document.querySelectorAll('input[type="text"], input[type="color"], select');
     valueElements.forEach(input => {
-        const attr = input.id;
-        const value = rapiPdf.getAttribute(attr);
-        if (value) {
-            input.value = value;
+        if (input && input.id) {
+            const attr = input.id;
+            const value = rapiPdf.getAttribute(attr);
+            if (value) {
+                input.value = value;
+            }
         }
     });
+
+    const specUrlInput = document.getElementById('spec-url');
+    if (specUrlInput && rapiPdf) {
+        const specUrl = rapiPdf.getAttribute('spec-url');
+        if (specUrl) {
+            specUrlInput.value = specUrl;
+        }
+    }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    initializeSettings();
-    document.getElementById('spec-url').value = rapiPdf.getAttribute('spec-url');
+    try {
+        initializeSettings();
+    } catch (error) {
+        console.warn('Error initializing settings:', error);
+    }
 });
