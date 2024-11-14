@@ -1,3 +1,24 @@
+const BOOLEAN_ATTRIBUTES = [
+    'include-info',
+    'include-toc',
+    'include-security',
+    'include-example',
+    'include-api-details',
+    'include-api-list',
+    'pdf-sort-tags'
+];
+
+const TEXT_ATTRIBUTES = [
+    'pdf-title',
+    'pdf-cover-text',
+    'pdf-security-text',
+    'pdf-api-text',
+    'pdf-footer-text',
+    'pdf-primary-color',
+    'pdf-alternate-color',
+    'pdf-schema-style'
+];
+
 const rapiPdf = document.getElementById('rapipdf');
 const dropZone = document.getElementById('drop-zone');
 const fileInput = document.getElementById('file-input');
@@ -160,44 +181,42 @@ function showStatus(element, message, type) {
     }, 3000);
 }
 
+function toggleSettings() {
+    const content = document.querySelector('.settings-content');
+    const icon = document.querySelector('.toggle-icon');
+    const header = document.querySelector('.settings-header');
+    const isCollapsed = content.classList.contains('collapsed');
+
+    content.classList.toggle('collapsed');
+    icon.classList.toggle('collapsed');
+
+    header.setAttribute('aria-expanded', isCollapsed ? 'true' : 'false');
+    content.setAttribute('aria-hidden', isCollapsed ? 'false' : 'true');
+}
+
 function applySettings() {
     if (!rapiPdf) {
         console.error('RapiPdf element not found');
         return;
     }
 
-    const booleanAttrs = [
-        'include-info',
-        'include-toc',
-        'include-security',
-        'include-example',
-        'include-api-details',
-        'include-api-list',
-        'pdf-sort-tags'
-    ];
-
-    booleanAttrs.forEach(attr => {
+    BOOLEAN_ATTRIBUTES.forEach(attr => {
         const element = document.getElementById(attr);
         if (element) {
-            rapiPdf.setAttribute(attr, element.checked.toString());
+            if (element.checked) {
+                rapiPdf.setAttribute(attr, 'true');
+            } else {
+                rapiPdf.removeAttribute(attr);
+            }
         }
     });
 
-    const textAttrs = [
-        'pdf-title',
-        'pdf-cover-text',
-        'pdf-security-text',
-        'pdf-api-text',
-        'pdf-footer-text',
-        'pdf-primary-color',
-        'pdf-alternate-color',
-        'pdf-schema-style'
-    ];
-
-    textAttrs.forEach(attr => {
+    TEXT_ATTRIBUTES.forEach(attr => {
         const element = document.getElementById(attr);
-        if (element && element.value) {
-            rapiPdf.setAttribute(attr, element.value);
+        if (element && element.value.trim()) {
+            rapiPdf.setAttribute(attr, element.value.trim());
+        } else {
+            rapiPdf.removeAttribute(attr);
         }
     });
 
@@ -218,21 +237,24 @@ function initializeSettings() {
 
     const booleanElements = document.querySelectorAll('input[type="checkbox"]');
     booleanElements.forEach(checkbox => {
-        if (checkbox && checkbox.id) {
-            const attr = checkbox.id;
-            const value = rapiPdf.getAttribute(attr);
-            checkbox.checked = value === null || value !== 'false';
+        if (checkbox) {
+            checkbox.checked = false;
         }
     });
 
     const valueElements = document.querySelectorAll('input[type="text"], input[type="color"], select');
     valueElements.forEach(input => {
-        if (input && input.id) {
-            const attr = input.id;
-            const value = rapiPdf.getAttribute(attr);
-            if (value) {
-                input.value = value;
-            }
+        if (input && input.type === 'color') {
+            input.value = '#000000';
+        } else if (input) {
+            input.value = '';
+        }
+    });
+
+    const selectElements = document.querySelectorAll('select');
+    selectElements.forEach(select => {
+        if (select && select.options.length > 0) {
+            select.selectedIndex = 0;
         }
     });
 
@@ -243,11 +265,24 @@ function initializeSettings() {
             specUrlInput.value = specUrl;
         }
     }
+
+    [...BOOLEAN_ATTRIBUTES, ...TEXT_ATTRIBUTES].forEach(attr => {
+        rapiPdf.removeAttribute(attr);
+    });
 }
 
 document.addEventListener('DOMContentLoaded', () => {
     try {
         initializeSettings();
+
+        const header = document.querySelector('.settings-header');
+        const content = document.querySelector('.settings-content');
+        if (header && content) {
+            header.setAttribute('aria-expanded', 'false');
+            header.setAttribute('aria-controls', 'settings-panel');
+            content.setAttribute('aria-hidden', 'true');
+            content.id = 'settings-panel';
+        }
     } catch (error) {
         console.warn('Error initializing settings:', error);
     }

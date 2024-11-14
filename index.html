@@ -37,11 +37,11 @@
                     <line x1="12" y1="17" x2="12" y2="17" />
                 </svg>
                 <div class="warning-text">
-                    <strong>Note:</strong> For large JSON/YAML
-                    specification files, the URL method might experience
-                    performance issues. In such cases, it's recommended
-                    to copy the content and use the "Paste Content" tab
-                    instead.
+                    <strong>Note:</strong> For large JSON/YAML specification
+                    files, the URL method might experience performance issues.
+                    In such cases, it's recommended to either upload the file
+                    directly using the "File Upload" tab or copy the content and
+                    use the "Paste Content" tab instead.
                 </div>
             </div>
             <div class="content-section">
@@ -89,105 +89,119 @@
             </div>
 
             <div class="settings-container container">
-                <h2 class="settings-title">PDF Settings</h2>
+                <button class="settings-header" onclick="toggleSettings()">
+                    <div class="settings-header-content">
+                        <h2 class="settings-title">PDF Settings</h2>
+                        <span class="settings-header-description">Configure PDF
+                            generation options</span>
+                    </div>
+                    <div class="toggle-icon-container">
+                        <svg class="toggle-icon" viewBox="0 0 24 24" width="24"
+                            height="24" stroke="currentColor" stroke-width="2"
+                            fill="none" stroke-linecap="round"
+                            stroke-linejoin="round">
+                            <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                    </div>
+                </button>
 
-                <div class="settings-grid">
-                    <div class="settings-group">
-                        <h3>Content Options</h3>
-                        <div class="checkbox-grid">
-                            <label class="checkbox-label">
-                                <input type="checkbox" id="include-info"
-                                    checked>
-                                <span>API Information</span>
-                            </label>
-                            <label class="checkbox-label">
-                                <input type="checkbox" id="include-toc" checked>
-                                <span>Table of Contents</span>
-                            </label>
-                            <label class="checkbox-label">
-                                <input type="checkbox" id="include-security"
-                                    checked>
-                                <span>Security Section</span>
-                            </label>
-                            <label class="checkbox-label">
-                                <input type="checkbox" id="include-example">
-                                <span>Examples</span>
-                            </label>
-                            <label class="checkbox-label">
-                                <input type="checkbox" id="include-api-details"
-                                    checked>
-                                <span>API Details</span>
-                            </label>
-                            <label class="checkbox-label">
-                                <input type="checkbox" id="include-api-list">
-                                <span>API List</span>
-                            </label>
-                            <label class="checkbox-label">
-                                <input type="checkbox" id="pdf-sort-tags"
-                                    checked>
-                                <span>Sort Tags</span>
-                            </label>
+                <div class="settings-content collapsed">
+                    <div class="settings-grid">
+                        <div class="settings-group">
+                            <h3>Content Options</h3>
+                            <div class="checkbox-grid">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="include-info">
+                                    <span>API Information</span>
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="include-toc">
+                                    <span>Table of Contents</span>
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox"
+                                        id="include-security">
+                                    <span>Security Section</span>
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="include-example">
+                                    <span>Examples</span>
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox"
+                                        id="include-api-details">
+                                    <span>API Details</span>
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox"
+                                        id="include-api-list">
+                                    <span>API List</span>
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="pdf-sort-tags">
+                                    <span>Sort Tags</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="settings-group">
+                            <h3>Style Options</h3>
+                            <div class="style-grid">
+                                <div class="setting-row">
+                                    <label>Schema Style</label>
+                                    <select id="pdf-schema-style"
+                                        class="format-select">
+                                        <option value="table">Table</option>
+                                        <option value="object">Object</option>
+                                    </select>
+                                </div>
+                                <div class="setting-row">
+                                    <label>Primary Color</label>
+                                    <input type="color" id="pdf-primary-color">
+                                </div>
+                                <div class="setting-row">
+                                    <label>Alternate Color</label>
+                                    <input type="color"
+                                        id="pdf-alternate-color">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="settings-group">
+                            <h3>Text Content</h3>
+                            <div class="text-fields">
+                                <div class="setting-row">
+                                    <label>PDF Title</label>
+                                    <input type="text" id="pdf-title"
+                                        placeholder="API Reference">
+                                </div>
+                                <div class="setting-row">
+                                    <label>Cover Text</label>
+                                    <input type="text" id="pdf-cover-text"
+                                        placeholder="Optional cover page text">
+                                </div>
+                                <div class="setting-row">
+                                    <label>Security Text</label>
+                                    <input type="text" id="pdf-security-text"
+                                        placeholder="Optional security text">
+                                </div>
+                                <div class="setting-row">
+                                    <label>API Text</label>
+                                    <input type="text" id="pdf-api-text"
+                                        placeholder="Optional API text">
+                                </div>
+                                <div class="setting-row">
+                                    <label>Footer Text</label>
+                                    <input type="text" id="pdf-footer-text"
+                                        placeholder="Optional footer text">
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="settings-group">
-                        <h3>Style Options</h3>
-                        <div class="style-grid">
-                            <div class="setting-row">
-                                <label>Schema Style</label>
-                                <select id="pdf-schema-style"
-                                    class="format-select">
-                                    <option value="table">Table</option>
-                                    <option value="object">Object</option>
-                                </select>
-                            </div>
-                            <div class="setting-row">
-                                <label>Primary Color</label>
-                                <input type="color" id="pdf-primary-color"
-                                    value="#333333">
-                            </div>
-                            <div class="setting-row">
-                                <label>Alternate Color</label>
-                                <input type="color" id="pdf-alternate-color"
-                                    value="#444444">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="settings-group">
-                        <h3>Text Content</h3>
-                        <div class="text-fields">
-                            <div class="setting-row">
-                                <label>PDF Title</label>
-                                <input type="text" id="pdf-title"
-                                    value="API Reference">
-                            </div>
-                            <div class="setting-row">
-                                <label>Cover Text</label>
-                                <input type="text" id="pdf-cover-text"
-                                    placeholder="Optional cover page text">
-                            </div>
-                            <div class="setting-row">
-                                <label>Security Text</label>
-                                <input type="text" id="pdf-security-text"
-                                    placeholder="Optional security text">
-                            </div>
-                            <div class="setting-row">
-                                <label>API Text</label>
-                                <input type="text" id="pdf-api-text"
-                                    placeholder="Optional API text">
-                            </div>
-                            <div class="setting-row">
-                                <label>Footer Text</label>
-                                <input type="text" id="pdf-footer-text"
-                                    placeholder="Optional footer text">
-                            </div>
-                        </div>
-                    </div>
+                    <button class="apply-settings"
+                        onclick="applySettings()">Apply Settings</button>
                 </div>
-
-                <button class="apply-settings" onclick="applySettings()">Apply
-                    Settings</button>
             </div>
         </div>
         <footer class="footer">
